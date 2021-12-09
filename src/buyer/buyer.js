@@ -45,10 +45,6 @@ const getWeb3 = () =>
   const deployedNetwork = DealJson.networks[netId];
   const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address);
   console.log("works")
-
-  $("#overlay").click(() => {
-    $("#overlay").hide()
-  })
   
   $('#test').click(() => {
       const elem = $("#test")
