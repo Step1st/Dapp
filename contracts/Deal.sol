@@ -11,9 +11,10 @@ contract Deal {
 
   struct Order {
     address buyer;
-    uint ordersid;
+    uint orderid;
     uint product;
     uint price;
+    Shipment shipment;
 
     bool init;
   }
@@ -26,26 +27,45 @@ contract Deal {
 
   uint orders_size;
 
-  event orderSent(address buyer, uint orderid, uint product, uint price);
-  event orderApproved(uint orderid);
+  event orderSent(address buyer, uint orderid, uint product);
+  event orderApproved(address buyer, uint orderid);
+  event shipmentAdded(address buyer, uint orderid);
+  event orderDelivered(address buyer, uint orderid);
 
-  function sendOrder(uint _product, uint _price) external payable {
+  function sendOrder(uint product) external  {
 
-    orders[orders_size] = Order(msg.sender, orders_size++, _product, _price, false);
+    orders[orders_size] = Order(msg.sender, orders_size, product, 0, Shipment(address(0), 0), false);
 
-    emit orderSent(msg.sender, orders_size, _product, _price);
+    emit orderSent(msg.sender, orders_size, product);
+    orders_size++;
   }
 
-  function initOrder(uint _orderid) external {
+  function initOrder(uint orderid) external {
     require(msg.sender == owner);
 
-    orders[_orderid].init = true;
+    orders[orderid].init = true;
 
-    emit orderApproved(_orderid);
+    emit orderApproved(orders[orderid].buyer, orderid);
   }
 
-  function addShipment() {
+  function addShipment(uint orderid, address _courier, uint price) external {
+    require(msg.sender == owner);
+    require(orders[orderid].init);
 
+    orders[orderid].shipment = Shipment(_courier, price);
+
+    emit shipmentAdded(orders[orderid].buyer, orderid);
+  }
+
+  function delivered(uint orderid) external payable {
+    require(msg.sender == orders[orderid].shipment.courier);
+    require(orders[orderid].init);
+
+    emit orderDelivered(orders[orderid].buyer, orderid);
+
+    payable(owner).transfer(orders[orderid].price);
+
+    payable(orders[orderid].shipment.courier).transfer(orders[orderid].shipment.price);
   }
 
 }
