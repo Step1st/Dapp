@@ -44,8 +44,18 @@ const getWeb3 = () =>
   const netId = await web3.eth.net.getId();
   const deployedNetwork = DealJson.networks[netId];
   const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address);
-  console.log("works")
+  const accounts = await web3.eth.getAccounts();
+
+  $('#accAdress').html(`${accounts[0]}`)
   
-  $('#test').click(() => {
-      const elem = $("#test")
+  $('#expandMenu').click(() =>{
+    if($('#expandMenu').css('transform') == 'matrix(-1, 0, 0, -1, 0, 0)'){
+      $('#expandMenu').css('transform', 'none')
+      $('.functionBar').css('height', '5%')
+      $('.functionBar div').css('height', '0%')
+      return
+    }
+    $('#expandMenu').css('transform', 'rotate(180deg)')
+    $('.functionBar').css('height', '50%')
+    $('.functionBar div').css('height', '100%')
   })
