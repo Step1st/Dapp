@@ -2,7 +2,6 @@ async function fetchDeal() {
    const response = await fetch('../../build/contracts/Deal.json');
    return response.json();
 }
-
 const getWeb3 = () =>
   new Promise((resolve, reject) => {
     // Wait for loading completion to avoid race conditions with web3 injection timing.
@@ -36,26 +35,34 @@ const getWeb3 = () =>
         resolve(web3);
       }
     });
-  });
+ });
 
 
-  const web3 = await getWeb3();
-  const DealJson = await fetchDeal();
-  const netId = await web3.eth.net.getId();
-  const deployedNetwork = DealJson.networks[netId];
-  const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address);
-  const accounts = await web3.eth.getAccounts();
+const web3 = await getWeb3();
+const DealJson = await fetchDeal();
+const netId = await web3.eth.net.getId();
+const deployedNetwork = DealJson.networks[netId];
+const accounts = await web3.eth.getAccounts();
+const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address, {from: accounts[0]});
 
-  $('#accAdress').html(`${accounts[0]}`)
-  
-  $('#expandMenu').click(() =>{
-    if($('#expandMenu').css('transform') == 'matrix(-1, 0, 0, -1, 0, 0)'){
-      $('#expandMenu').css('transform', 'none')
-      $('.functionBar').css('height', '5%')
-      $('.functionBar div').css('height', '0%')
-      return
-    }
-    $('#expandMenu').css('transform', 'rotate(180deg)')
-    $('.functionBar').css('height', '50%')
-    $('.functionBar div').css('height', '100%')
-  })
+$('#accAdress').html(`${accounts[0]}`)
+
+var eventemitter = Deal.events.orderSent({filter: {buyer: accounts[0]}}, (error, event) => {
+  console.log(event);
+});
+
+$('#expandMenu').click(() =>{
+  if($('#expandMenu').css('transform') == 'matrix(-1, 0, 0, -1, 0, 0)'){
+    $('#expandMenu').css('transform', 'none')
+    $('.functionBar').css('height', '5%')
+    $('.functionBar div').css('height', '0%')
+    return
+  }
+  $('#expandMenu').css('transform', 'rotate(180deg)')
+  $('.functionBar').css('height', '50%')
+  $('.functionBar div').css('height', '100%')
+})
+
+$('.order-button').click(() =>{
+  Deal.methods.sendOrder($('.order-button').prev().prev().html()).send();
+})
