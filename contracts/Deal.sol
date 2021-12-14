@@ -12,7 +12,7 @@ contract Deal {
   struct Order {
     address buyer;
     uint orderid;
-    uint product;
+    string product;
     uint price;
     Shipment shipment;
 
@@ -27,12 +27,12 @@ contract Deal {
 
   uint orders_size;
 
-  event orderSent(address buyer, uint orderid, uint product);
+  event orderSent(address buyer, uint orderid, string product);
   event orderApproved(address buyer, uint orderid);
   event shipmentAdded(address buyer, uint orderid);
   event orderDelivered(address buyer, uint orderid);
 
-  function sendOrder(uint product) external  {
+  function sendOrder(string memory product) external  {
 
     orders[orders_size] = Order(msg.sender, orders_size, product, 0, Shipment(address(0), 0), false);
 
@@ -67,5 +67,9 @@ contract Deal {
 
     payable(orders[orderid].shipment.courier).transfer(orders[orderid].shipment.price);
   }
+
+  // function queryOrder() external pure returns (uint, string memory, uint){
+
+  // }
 
 }
