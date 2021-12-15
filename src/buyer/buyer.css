@@ -3,10 +3,10 @@ html, body {
     width: 100vw;
     margin:0;
     padding:0;
-    font-family: 'Montserrat', sans-serif;
     overflow-x: hidden;
     position: relative;
     color: black;
+    font-family: 'Roboto',Helvetica,Arial,sans-serif;
 }
 body {
     background-color: rgb(39, 39, 39);
@@ -86,54 +86,79 @@ body {
     transition: 0.3s;
 }
 
-#orderList {
-    width: 30%;
-    max-height: 10%;
+#infoCard {
+    width: 40%;
+    min-height: 50%;
     background-color: white;
-    border-radius: 2px;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: rgba(0,0,0,0.2);
+    border-width: 1px;
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2),0 1px 1px 0 rgba(0,0,0,0.141),0 1px 3px 0 rgba(0,0,0,0.122);
+    margin-top: 0.5%;
+    margin-bottom: 0.5%;
     padding: 1%;
-    align-items: center;
+    transition: 1s;
 }
 
-.orderItem {
-    width: 40%;
-    height: 20%;
+.infoParam {
+    max-height: 16.6666%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: 2px;
-    box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
-    border: 2px solid rgb(39, 39, 39);
-    margin-bottom: 1%;
+    border-bottom: 1px solid #dfdfdf;
+    font-weight: 500;
     transition: 1s;
 }
-.orderItem:hover {
-    box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
-    border: 2px solid rgb(39, 39, 39);
-}
-.orderid {
-    height: 100%;
-    width: 10%;
+
+.check {
+    width: 30%;
+    max-height: 11%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    border-right: 2px solid #dfdfdf;
+    justify-content: space-around;
+    margin-top: 1%;
 }
 
-.product {
+#check-button {
+    width: 30%;
     height: 100%;
-    width: 70%;
-    display: flex;
-    align-items: center;
-    margin-left: 1%;
-    border-right: 2px solid #dfdfdf;
+    background-color: #f9f9f9;
+    border-radius: 2px;
+    box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
+    cursor: pointer;
+    border: 2px solid rgb(39, 39, 39);
+    padding: 1%;
+    transition: 0.3s;
 }
-.price {
-    height: 100%;
+
+#pay-button {
     width: 20%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: #f9f9f9;
+    border-radius: 2px;
+    box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
+    cursor: pointer;
+    border: 2px solid rgb(39, 39, 39);
+    padding: 1%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    transition: 0.3s;
+}
+
+input {
+    border-width: 0px 0px 1px;
+    border-color: #DADADA;
+    padding-bottom: 5px;
+    outline: none;
+}
+
+#check-button:hover {
+    background-color: white;
+    width: 33%;
+}
+#pay-button:hover {
+    width: 22%;
+    background-color: white;
 }
 
 .catalog {
@@ -179,7 +204,7 @@ body {
     text-align: center;
     margin-left: 5%;
     margin-right: 5%;
-    margin-bottom: 0%;
+    margin-bottom: 5%;
     font-size: 1.2em;
     margin: 0px;
 }
@@ -268,6 +293,7 @@ footer > ul > li:nth-child(2) {
     text-align: center;
     font-size: 1em;
     transition: 0.3s;
+    margin-top: 5%;
 }
 
 .order-button:hover {

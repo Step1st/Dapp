@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="buyer.css">
     <title>Buyer</title>
 </head>
@@ -17,9 +20,19 @@
         <img id="expandMenu" src="../res/arrow_down.svg" alt="">
         <div>
             <p>Account:<span id="accAdress"></span></p>
-            <p>Last OrderID:<span id="lastOrderID"></span></p>
-            <span class="orderItem"> <span class="orderid">1</span> <span class="product">Oneplus 6</span> <span class="price">300</span> </span>
-            <button>Check order</button>
+            <div id="infoCard">
+                <div class="infoParam">Order Id: <span id="orderid"></span></div>
+                <div class="infoParam">Product name: <span id="product"></span></div>
+                <div class="infoParam">Price <span id="price"></span></div>
+                <div class="infoParam">Money sent: <span id="pay"></span></div>
+                <div class="infoParam">Status: <span id="init"></span></div>
+                <div class="infoParam">Payed: <span id="payed"></span></div>
+            </div>
+            <div class="check">
+                <button id="check-button">Select Order</button>
+                <input id="check-orderid" placeholder="Type here" type="number">
+            </div>
+            <button id="pay-button">Pay</button>
         </div>
     </div>
 
@@ -29,7 +42,6 @@
                 <img class="itemPhoto" src="../res/oneplus Nord.png" alt="">
                 <div>
                     <h5 class="product-name">OnePlus Nord CE 5G</h5>
-                    <h4 class="product-price">300$</h4>
                     <button class="order-button ">Order</button>
                 </div>
             </a>
@@ -37,7 +49,6 @@
                 <img class="itemPhoto" src="../res/oneplus nord 2.png" alt="">
                 <div>
                     <h5 class="product-name">OnePlus Nord 2 5G</h5>
-                    <h4 class="product-price">400$</h4>
                     <button class="order-button ">Order</button>
                 </div>
             </a>
@@ -45,7 +56,6 @@
                 <img class="itemPhoto" src="../res/oneplus 9.png" alt="">
                 <div>
                     <h5 class="product-name">OnePlus 9</h5>
-                    <h4 class="product-price">700$</h4>
                     <button class="order-button ">Order</button>
                 </div>
             </a>
@@ -53,7 +63,6 @@
                 <img class="itemPhoto" src="../res/oneplus 9 pro.png" alt="">
                 <div>
                     <h5 class="product-name">OnePlus 9 Pro</h5>
-                    <h4 class="product-price">900$</h4>
                     <button class="order-button ">Order</button>
                 </div>
             </a>
@@ -61,7 +70,6 @@
                 <img class="itemPhoto" src="../res/oneplus 8.png" alt="">
                 <div>
                     <h5 class="product-name">OnePlus 8</h5>
-                    <h4 class="product-price">400$</h4>
                     <button class="order-button ">Order</button>
                 </div>
             </a>

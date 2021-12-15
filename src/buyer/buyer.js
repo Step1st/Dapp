@@ -49,6 +49,12 @@ $('#accAdress').html(`${accounts[0]}`)
 
 var eventemitter = Deal.events.orderSent({filter: {buyer: accounts[0]}}, (error, event) => {
   console.log(event);
+  $('#orderid').html(event.returnValues.orderid);
+  $('#product').html(event.returnValues.product);
+  $('#price').html(event.returnValues.price);
+  $('#pay').html(event.returnValues.pay);
+  $('#init').html(event.returnValues.init ? 'Approved' : 'NotApproved');
+  $('#payed').html(event.returnValues.payed ? 'Yes' : 'No')
 });
 
 $('#expandMenu').click(() =>{
@@ -59,10 +65,26 @@ $('#expandMenu').click(() =>{
     return
   }
   $('#expandMenu').css('transform', 'rotate(180deg)')
-  $('.functionBar').css('height', '50%')
+  $('.functionBar').css('height', '60%')
   $('.functionBar div').css('height', '100%')
 })
 
-$('.order-button').click(() =>{
-  Deal.methods.sendOrder($('.order-button').prev().prev().html()).send();
+$('.order-button').click((event) =>{
+  Deal.methods.sendOrder(`${event.currentTarget.parentElement.children[0].innerHTML}`).send();
+  console.log(event.currentTarget.parentElement.children[0].innerHTML)
+})
+
+$('#check-button').click( async () => {
+  let val = $('#check-orderid').val()
+  if (typeof val == 'undefined' || val <= 0) {
+    return
+  }
+  const order = await Deal.methods.queryOrder(val).call();
+  console.log(order);
+  $('#orderid').html(order.orderid);
+  $('#product').html(order.product);
+  $('#price').html(order.price);
+  $('#pay').html(order.pay);
+  $('#init').html(order.init ? 'Approved' : 'NotApproved');
+  $('#payed').html(order.payed ? 'Yes' : 'No')
 })
