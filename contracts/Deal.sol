@@ -14,9 +14,11 @@ contract Deal {
     uint orderid;
     string product;
     uint price;
+    uint pay;
     Shipment shipment;
 
     bool init;
+    bool payed;
   }
 
   constructor() {
@@ -27,16 +29,16 @@ contract Deal {
 
   uint orders_size;
 
-  event orderSent(address buyer, uint orderid, string product);
+  event orderSent(address buyer, uint orderid, string product, uint price, uint pay, bool init, bool payed);
   event orderApproved(address buyer, uint orderid);
   event shipmentAdded(address buyer, uint orderid);
   event orderDelivered(address buyer, uint orderid);
 
   function sendOrder(string memory product) external  {
 
-    orders[orders_size] = Order(msg.sender, orders_size, product, 0, Shipment(address(0), 0), false);
+    orders[orders_size] = Order(msg.sender, orders_size, product, 0, 0, Shipment(address(0), 0), false, false);
 
-    emit orderSent(msg.sender, orders_size, product);
+    emit orderSent(msg.sender, orders_size, product, 0, 0, false, false);
     orders_size++;
   }
 
@@ -48,11 +50,24 @@ contract Deal {
     emit orderApproved(orders[orderid].buyer, orderid);
   }
 
-  function addShipment(uint orderid, address _courier, uint price) external {
+  function sendPay(uint orderid) payable public{
+    require(orders[orderid].buyer == msg.sender);
+
+    require(orders[orderid].init);
+
+    orders[orderid].pay = msg.value;
+
+    if(orders[orderid].pay == orders[orderid].price + orders[orderid].shipment.price){
+      orders[orderid].payed = true;
+    }
+  }
+
+  function addShipment(uint orderid, address courier, uint price, uint shipment_price) external {
     require(msg.sender == owner);
     require(orders[orderid].init);
 
-    orders[orderid].shipment = Shipment(_courier, price);
+    orders[orderid].price = price;
+    orders[orderid].shipment = Shipment(courier, shipment_price);
 
     emit shipmentAdded(orders[orderid].buyer, orderid);
   }
@@ -60,6 +75,7 @@ contract Deal {
   function delivered(uint orderid) external payable {
     require(msg.sender == orders[orderid].shipment.courier);
     require(orders[orderid].init);
+    require(orders[orderid].payed);
 
     emit orderDelivered(orders[orderid].buyer, orderid);
 
@@ -68,8 +84,8 @@ contract Deal {
     payable(orders[orderid].shipment.courier).transfer(orders[orderid].shipment.price);
   }
 
-  // function queryOrder() external pure returns (uint, string memory, uint){
-
-  // }
+  function queryOrder(uint _orderid) external view returns (address buyer, uint orderid, string memory product, uint price, uint pay, bool init, bool payed){
+    return (orders[_orderid].buyer, orders[_orderid].orderid, orders[_orderid].product, (orders[_orderid].price + orders[_orderid].shipment.price), orders[_orderid].pay, orders[_orderid].init, orders[_orderid].payed);  
+  }
 
 }
