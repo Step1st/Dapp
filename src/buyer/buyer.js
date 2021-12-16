@@ -97,7 +97,7 @@ $('#check-button').click( async () => {
 
 $('#pay-button').click( () => {
   let val = $('#check-orderid').val()
-  if (typeof val == 'undefined' || val <= 0 || $('#payed').html() == 'Yes' || $('#init').html() == 'NotApproved' || parseInt($('#price').html()) == 0 || $('#product').html() == '') {
+  if (typeof val == 'undefined' || val <= 0 || $('#payed').html() == 'Yes' || $('#init').html() == 'NotApproved' || parseFloat($('#price').html()) == 0 || $('#product').html() == '') {
     alert("You can't pay for this order")
     return
   }
