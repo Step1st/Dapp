@@ -28,38 +28,6 @@ body {
     cursor: pointer;
 }
 
-.menu {
-    width: auto;
-    display: flex;
-    justify-content: end;
-    margin-left: auto;
-    margin-right: 8%;
-}
-
-.menuItem {
-    width: 33%;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 20%;
-    padding: 1%;
-    cursor: pointer;
-}
-
-.menuItem > p {
-    font-family: 'Montserrat', sans-serif;
-    color: aliceblue;
-    text-align: center;
-    white-space: nowrap;
-}
-
-.svgIcon {
-    width: 28px;
-    margin-right: 10%;
-    filter: invert(100%) sepia(36%) saturate(3501%) hue-rotate(178deg) brightness(106%) contrast(104%);
-}
-
 .functionBar {
     height: 5%;
     width: 100%;
@@ -111,18 +79,29 @@ body {
     transition: 1s;
 }
 
-.check {
-    width: 30%;
-    max-height: 11%;
+.interface {
+    width: 60%;
+    display: flex;
+}
+.button-group {
+    width: 50%;
+    max-height: 80%;
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    margin-top: 1%;
+    justify-content: center;
+    flex-direction: column;
+    padding: 1%;
+}
+.inputs {
+    max-height: 15%;
+    display: flex;
+    justify-content: space-between;
+    width: 40%;
 }
 
 #check-button {
-    width: 30%;
-    height: 100%;
+    width: 45%;
+    height: 25%;
     background-color: #f9f9f9;
     border-radius: 2px;
     box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
@@ -130,10 +109,12 @@ body {
     border: 2px solid rgb(39, 39, 39);
     padding: 1%;
     transition: 0.3s;
+    margin-top: 2%;
 }
 
 #pay-button {
-    width: 20%;
+    width: 45%;
+    height: 25%;
     background-color: #f9f9f9;
     border-radius: 2px;
     box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
@@ -154,11 +135,18 @@ input {
 
 #check-button:hover {
     background-color: white;
-    width: 33%;
+    width: 50%;
 }
 #pay-button:hover {
-    width: 22%;
+    width: 50%;
     background-color: white;
+}
+
+#enterEther {
+    width: 20%;
+    margin-top: 2%;
+    display: flex;
+    justify-content: space-between;
 }
 
 .catalog {

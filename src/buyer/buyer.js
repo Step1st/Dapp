@@ -48,11 +48,19 @@ const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address, {from:
 $('#accAdress').html(`${accounts[0]}`)
 
 var eventemitter = Deal.events.orderSent({filter: {buyer: accounts[0]}}, (error, event) => {
-  console.log(event);
   $('#orderid').html(event.returnValues.orderid);
   $('#product').html(event.returnValues.product);
-  $('#price').html(event.returnValues.price);
-  $('#pay').html(event.returnValues.pay);
+  $('#price').html(web3.utils.fromWei(event.returnValues.price, 'ether') + 'Eth');
+  $('#pay').html(web3.utils.fromWei(event.returnValues.pay, 'ether') + 'Eth');
+  $('#init').html(event.returnValues.init ? 'Approved' : 'NotApproved');
+  $('#payed').html(event.returnValues.payed ? 'Yes' : 'No')
+});
+
+var eventemitter2 = Deal.events.orderPayed({filter: {buyer: accounts[0]}}, (error, event) => {
+  $('#orderid').html(event.returnValues.orderid);
+  $('#product').html(event.returnValues.product);
+  $('#price').html(web3.utils.fromWei(event.returnValues.price, 'ether') + 'Eth');
+  $('#pay').html(web3.utils.fromWei(event.returnValues.pay, 'ether') + 'Eth');
   $('#init').html(event.returnValues.init ? 'Approved' : 'NotApproved');
   $('#payed').html(event.returnValues.payed ? 'Yes' : 'No')
 });
@@ -65,13 +73,12 @@ $('#expandMenu').click(() =>{
     return
   }
   $('#expandMenu').css('transform', 'rotate(180deg)')
-  $('.functionBar').css('height', '60%')
+  $('.functionBar').css('height', '65%')
   $('.functionBar div').css('height', '100%')
 })
 
 $('.order-button').click((event) =>{
   Deal.methods.sendOrder(`${event.currentTarget.parentElement.children[0].innerHTML}`).send();
-  console.log(event.currentTarget.parentElement.children[0].innerHTML)
 })
 
 $('#check-button').click( async () => {
@@ -83,8 +90,17 @@ $('#check-button').click( async () => {
   console.log(order);
   $('#orderid').html(order.orderid);
   $('#product').html(order.product);
-  $('#price').html(order.price);
-  $('#pay').html(order.pay);
+  $('#price').html(web3.utils.fromWei(order.price, 'ether') + 'Eth');
+  $('#pay').html((web3.utils.fromWei(order.pay, 'ether')) + 'Eth');
   $('#init').html(order.init ? 'Approved' : 'NotApproved');
   $('#payed').html(order.payed ? 'Yes' : 'No')
+})
+
+$('#pay-button').click( () => {
+  let val = $('#check-orderid').val()
+  if (typeof val == 'undefined' || val <= 0 || $('#payed').html() == 'Yes' || $('#init').html() == 'NotApproved' || parseInt($('#price').html()) == 0 || $('#product').html() == '') {
+    alert("You can't pay for this order")
+    return
+  }
+  Deal.methods.sendPay(val).send({value: `${web3.utils.toWei($('#ether').val())}`});
 })
