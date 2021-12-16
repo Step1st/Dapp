@@ -27,12 +27,13 @@ contract Deal {
 
   mapping (uint => Order) orders;
 
-  uint orders_size;
+  uint orders_size = 1;
 
   event orderSent(address buyer, uint orderid, string product, uint price, uint pay, bool init, bool payed);
   event orderApproved(address buyer, uint orderid);
   event shipmentAdded(address buyer, uint orderid);
   event orderDelivered(address buyer, uint orderid);
+  event orderPayed(address buyer, uint orderid, string product, uint price, uint pay, bool init, bool payed);
 
   function sendOrder(string memory product) external  {
 
@@ -50,16 +51,18 @@ contract Deal {
     emit orderApproved(orders[orderid].buyer, orderid);
   }
 
-  function sendPay(uint orderid) payable public{
+  function sendPay(uint orderid) payable public {
     require(orders[orderid].buyer == msg.sender);
 
     require(orders[orderid].init);
 
-    orders[orderid].pay = msg.value;
+    orders[orderid].pay += msg.value;
 
     if(orders[orderid].pay == orders[orderid].price + orders[orderid].shipment.price){
       orders[orderid].payed = true;
     }
+
+    emit orderPayed(msg.sender, orderid, orders[orderid].product, orders[orderid].price + orders[orderid].shipment.price, orders[orderid].pay, orders[orderid].init, orders[orderid].payed);
   }
 
   function addShipment(uint orderid, address courier, uint price, uint shipment_price) external {
@@ -87,5 +90,4 @@ contract Deal {
   function queryOrder(uint _orderid) external view returns (address buyer, uint orderid, string memory product, uint price, uint pay, bool init, bool payed){
     return (orders[_orderid].buyer, orders[_orderid].orderid, orders[_orderid].product, (orders[_orderid].price + orders[_orderid].shipment.price), orders[_orderid].pay, orders[_orderid].init, orders[_orderid].payed);  
   }
-
 }
