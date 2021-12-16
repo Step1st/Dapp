@@ -87,7 +87,6 @@ $('#check-button').click( async () => {
     return
   }
   const order = await Deal.methods.queryOrder(val).call();
-  console.log(order);
   $('#orderid').html(order.orderid);
   $('#product').html(order.product);
   $('#price').html(web3.utils.fromWei(order.price, 'ether') + 'Eth');
