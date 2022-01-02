@@ -44,6 +44,12 @@ const netId = await web3.eth.net.getId();
 const deployedNetwork = DealJson.networks[netId];
 const accounts = await web3.eth.getAccounts();
 const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address, {from: accounts[0]});
+let selectedOrder = {
+  orderid: undefined,
+  product: undefined,
+  buyer: undefined,
+  price: undefined
+};
 
 
 var orderSentEmiter = Deal.events.orderSent( (error, event) => {
@@ -60,11 +66,13 @@ function loadOrders(){
   for (let index = 0; index < localStorage.length; index++) {
     $('#table').append(localStorage.getItem(localStorage.key(index)));
   }
-  // console.log(localStorage.getItem(`order${i}`))
-  // while(localStorage.getItem(`order${i}`) != null) {
-  //   $('#table').append(localStorage.getItem(`order${i}`))
-  // }
   $('.approve-button').click(approve);
+  $('.tr').click(select);
+}
+
+function select(){
+  $('.tr').removeClass('tr-selected')
+  this.classList.add('tr-selected')
 }
 
 

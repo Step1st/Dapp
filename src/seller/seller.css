@@ -64,6 +64,11 @@ main {
     border: 0;
 }
 
+.tr-selected{
+    border-width: 2px;
+    border-color:dodgerblue;
+}
+
 .th, .td {
     border-right: 1px solid #dfdfdf;
     display: flex;
