@@ -53,14 +53,15 @@ main {
     margin-top: 1%;
 }
 
-.tr {
+.tr, .th {
+    min-width: fit-content;
     width: 100%;
     margin-top: 1%;
     display: flex;
     border: 1px solid #dfdfdf;
     height: 10%;
 }
-.tr:first-child {
+.th:first-child {
     border: 0;
 }
 
@@ -70,6 +71,7 @@ main {
 }
 
 .th, .td {
+    min-width: fit-content;
     border-right: 1px solid #dfdfdf;
     display: flex;
     align-items: center;
@@ -94,6 +96,43 @@ width: 25%;
 
 #buttonh, .button {
 width: 15%;
+}
+
+.interface {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 2%;
+    align-items: center;
+}
+.interface > div {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+input {
+    border-width: 0px 0px 1px;
+    border-color: #DADADA;
+    padding-bottom: 5px;
+    outline: none;
+    font-family: 'Roboto',Helvetica,Arial,sans-serif;
+}
+
+.shipment-button {
+    width: 50%;
+    background-color: #f9f9f9;
+    border-radius: 2px;
+    box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
+    cursor: pointer;
+    border: 2px solid rgb(39, 39, 39);
+    padding: 1%;
+    margin-top: 1%;
+    transition: 0.3s;
+}
+
+.shipment-button:hover {
+    width: 55%;
 }
 
 footer {

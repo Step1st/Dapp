@@ -48,7 +48,6 @@ let selectedOrder = {
   orderid: undefined,
   product: undefined,
   buyer: undefined,
-  price: undefined
 };
 
 
@@ -61,6 +60,14 @@ var orderSentEmiter = Deal.events.orderSent( (error, event) => {
 
 loadOrders();
 
+$('.shipment-button').click(() => {
+  let shipment = {
+    courier: $('#address').val(),
+    product_price: web3.utils.toWei(`${$('#product_price').val()}`),
+    shipping_price: web3.utils.toWei(`${$('#shipment_price').val()}`)
+  }
+  Deal.methods.addShipment(selectedOrder.orderid, shipment.courier, `${shipment.product_price}`, `${shipment.shipping_price}`).send()
+}) 
 
 function loadOrders(){
   for (let index = 0; index < localStorage.length; index++) {
@@ -70,13 +77,18 @@ function loadOrders(){
   $('.tr').click(select);
 }
 
+
 function select(){
   $('.tr').removeClass('tr-selected')
   this.classList.add('tr-selected')
+  selectedOrder.orderid = this.children[0].innerHTML
+  selectedOrder.product = this.children[1].innerHTML
+  selectedOrder.buyer = this.children[2].innerHTML
 }
 
 
 function approve(event) {
   Deal.methods.initOrder(event.currentTarget.parentElement.parentElement.children[0].innerHTML).send();
+  this.disabled = true;
 }
   
