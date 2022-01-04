@@ -18,6 +18,7 @@ contract Deal {
     Shipment shipment;
 
     bool init;
+    bool denied;
     bool payed;
   }
 
@@ -29,26 +30,35 @@ contract Deal {
 
   uint orders_size = 1;
 
-  event orderSent(address buyer, uint orderid, string product, uint price, uint pay, bool init, bool payed);
+  event orderSent(address buyer, uint orderid, string product, uint price, uint pay, bool init, bool denied, bool payed);
   event orderApproved(address buyer, uint orderid);
+  event orderDenied(address buyer, uint orderid);
   event shipmentAdded(address buyer, uint orderid);
   event orderDelivered(address buyer, uint orderid);
-  event orderPayed(address buyer, uint orderid, string product, uint price, uint pay, bool init, bool payed);
+  event orderPayed(address buyer, uint orderid, string product, uint price, uint pay, bool init, bool denied, bool payed);
 
   function sendOrder(string memory product) external  {
 
-    orders[orders_size] = Order(msg.sender, orders_size, product, 0, 0, Shipment(address(0), 0), false, false);
+    orders[orders_size] = Order(msg.sender, orders_size, product, 0, 0, Shipment(address(0), 0), false, false, false);
 
-    emit orderSent(msg.sender, orders_size, product, 0, 0, false, false);
+    emit orderSent(msg.sender, orders_size, product, 0, 0, false, false, false);
     orders_size++;
   }
 
   function initOrder(uint orderid) external {
     require(msg.sender == owner);
+    require(!(orders[orderid].denied));
 
     orders[orderid].init = true;
 
     emit orderApproved(orders[orderid].buyer, orderid);
+  }
+  function denyOrder(uint orderid) external {
+    require(msg.sender == owner);
+    require(!(orders[orderid].init));
+    orders[orderid].denied = true;
+
+    emit orderDenied(orders[orderid].buyer, orderid);
   }
 
   function sendPay(uint orderid) payable public {
@@ -62,7 +72,7 @@ contract Deal {
       orders[orderid].payed = true;
     }
 
-    emit orderPayed(msg.sender, orderid, orders[orderid].product, orders[orderid].price + orders[orderid].shipment.price, orders[orderid].pay, orders[orderid].init, orders[orderid].payed);
+    emit orderPayed(msg.sender, orderid, orders[orderid].product, orders[orderid].price + orders[orderid].shipment.price, orders[orderid].pay, orders[orderid].init, orders[orderid].denied, orders[orderid].payed);
   }
 
   function addShipment(uint orderid, address courier, uint price, uint shipment_price) external {
