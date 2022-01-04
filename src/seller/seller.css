@@ -41,7 +41,7 @@ main {
 
 
 #table {
-    width: 40%;
+    width: 50%;
     background-color: white;
     border-radius: 10px;
     border-style: solid;
@@ -65,11 +65,6 @@ main {
     border: 0;
 }
 
-.tr-selected{
-    border-width: 2px;
-    border-color:dodgerblue;
-}
-
 .th, .td {
     min-width: fit-content;
     border-right: 1px solid #dfdfdf;
@@ -91,15 +86,45 @@ width: 25%;
 }
 
 #buyerh, .buyer {
- width: 60%;
+ width: 50%;
 }
 
 #buttonh, .button {
-width: 15%;
+width: 25%;
+display: flex;
+justify-content: center;
+align-items: center;
+align-items: center;
+}
+
+.btn {
+    width: 30%;
+    background-color: #f9f9f9;
+    border-radius: 2px;
+    box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
+    cursor: pointer;
+    border: 2px solid rgb(39, 39, 39);
+    padding: 1%;
+}
+
+.approve-button {
+    margin-right: 6%;
+}
+
+.deny-button {
+    margin-left: 6%;
+}
+
+.approved {
+    color: green;
+}
+
+.denied {
+    color: red;
 }
 
 .interface {
-    width: 60%;
+    width: 65%;
     display: flex;
     flex-direction: column;
     margin-top: 2%;
