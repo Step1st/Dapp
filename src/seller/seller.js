@@ -54,8 +54,8 @@ let selectedOrder = {
 var orderSentEmiter = Deal.events.orderSent( (error, event) => {
   $('#table').append( 
     $(`<div class="tr ${event.returnValues.orderid}"> <span class="td orderid">${event.returnValues.orderid}</span> <span class="td product">${event.returnValues.product}</span> <span class="td buyer">${event.returnValues.buyer}</span> <span class="td button"><button class="btn approve-button">Approve</button> <button class="btn deny-button">Deny</button></span> </div>`));
-    $('.approve-button').click(approve);
-    $('.deny-button').click(deny);
+    $('.approve-button').unbind('click').click(approve);
+    $('.deny-button').unbind('click').click(deny);
     // $('.tr').click(select);
     localStorage.setItem(`order${event.returnValues.orderid}`, $(`.tr.${event.returnValues.orderid}`)[0].outerHTML)
 });
@@ -107,6 +107,7 @@ function loadOrders(){
 
 function approve(event) {
   Deal.methods.initOrder(event.currentTarget.parentElement.parentElement.children[0].innerHTML).send();
+  console.log("call")
 }
 function deny(event) {
   Deal.methods.denyOrder(event.currentTarget.parentElement.parentElement.children[0].innerHTML).send();

@@ -52,8 +52,32 @@ var eventemitter = Deal.events.orderSent({filter: {buyer: accounts[0]}}, (error,
   $('#product').html(event.returnValues.product);
   $('#price').html(web3.utils.fromWei(event.returnValues.price, 'ether') + 'Eth');
   $('#pay').html(web3.utils.fromWei(event.returnValues.pay, 'ether') + 'Eth');
-  $('#init').html(event.returnValues.init ? 'Approved' : 'NotApproved');
-  $('#payed').html(event.returnValues.payed ? 'Yes' : 'No')
+
+  $('#init').removeClass('approved')
+  $('#init').removeClass('denied')
+  $('#init').removeClass('submited')
+  if (event.returnValues.init) {
+    $('#init').addClass('approved')
+    $('#init').html('Approved &#10004;');
+  }
+  else if (event.returnValues.denied){
+    $('#init').addClass('denied')
+    $('#init').html('Denied &#x2718;');
+  }
+  else {
+    $('#init').addClass('submited')
+    $('#init').html('Submited');
+  }
+
+  $('#payed').removeClass('approved')
+  $('#payed').removeClass('denied')
+  if (event.returnValues.payed) {
+    $('#payed').addClass('approved')
+    $('#payed').html('Yes')
+  } else {
+    $('#payed').addClass('denied')
+    $('#payed').html('No')
+  }
 });
 
 var eventemitter2 = Deal.events.orderPayed({filter: {buyer: accounts[0]}}, (error, event) => {
@@ -61,8 +85,33 @@ var eventemitter2 = Deal.events.orderPayed({filter: {buyer: accounts[0]}}, (erro
   $('#product').html(event.returnValues.product);
   $('#price').html(web3.utils.fromWei(event.returnValues.price, 'ether') + 'Eth');
   $('#pay').html(web3.utils.fromWei(event.returnValues.pay, 'ether') + 'Eth');
-  $('#init').html(event.returnValues.init ? 'Approved' : 'NotApproved');
-  $('#payed').html(event.returnValues.payed ? 'Yes' : 'No')
+
+  $('#init').removeClass('approved')
+  $('#init').removeClass('denied')
+  $('#init').removeClass('submited')
+  if (event.returnValues.init) {
+    $('#init').addClass('approved')
+    $('#init').html('Approved &#10004;');
+  }
+  else if (event.returnValues.denied){
+    $('#init').addClass('denied')
+    $('#init').html('Denied &#x2718;');
+  }
+  else {
+    $('#init').addClass('submited')
+    $('#init').html('Submited');
+  }
+
+  $('#payed').removeClass('approved')
+  $('#payed').removeClass('denied')
+  if (event.returnValues.payed) {
+    $('#payed').addClass('approved')
+    $('#payed').html('Yes')
+  } else {
+    $('#payed').addClass('denied')
+    $('#payed').html('No')
+  }
+
 });
 
 $('#expandMenu').click(() =>{
@@ -87,12 +136,36 @@ $('#check-button').click( async () => {
     return
   }
   const order = await Deal.methods.queryOrder(val).call();
-  $('#orderid').html(order.orderid);
+  $('#orderid').html(val);
   $('#product').html(order.product);
   $('#price').html(web3.utils.fromWei(order.price, 'ether') + 'Eth');
   $('#pay').html((web3.utils.fromWei(order.pay, 'ether')) + 'Eth');
-  $('#init').html(order.init ? 'Approved' : 'NotApproved');
-  $('#payed').html(order.payed ? 'Yes' : 'No')
+  
+  $('#init').removeClass('approved')
+  $('#init').removeClass('denied')
+  $('#init').removeClass('submited')
+  if (order.init) {
+    $('#init').addClass('approved')
+    $('#init').html('Approved &#10004;');
+  }
+  else if (order.denied){
+    $('#init').addClass('denied')
+    $('#init').html('Denied &#x2718;');
+  }
+  else {
+    $('#init').addClass('submited')
+    $('#init').html('Submited');
+  }
+
+  $('#payed').removeClass('approved')
+  $('#payed').removeClass('denied')
+  if (order.payed) {
+    $('#payed').addClass('approved')
+    $('#payed').html('Yes')
+  } else {
+    $('#payed').addClass('denied')
+    $('#payed').html('No')
+  }
 })
 
 $('#pay-button').click( () => {

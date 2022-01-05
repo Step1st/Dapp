@@ -289,3 +289,15 @@ footer > ul > li:nth-child(2) {
     height: 45px;
     background-color: white;
 }
+
+.approved {
+    color: green;
+}
+
+.denied {
+    color: red;
+}
+
+.submited {
+    color: darkorange;
+}
