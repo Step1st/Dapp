@@ -97,7 +97,7 @@ contract Deal {
     payable(orders[orderid].shipment.courier).transfer(orders[orderid].shipment.price);
   }
 
-  function queryOrder(uint _orderid) external view returns (address buyer, uint orderid, string memory product, uint price, uint pay, bool init, bool payed){
-    return (orders[_orderid].buyer, orders[_orderid].orderid, orders[_orderid].product, (orders[_orderid].price + orders[_orderid].shipment.price), orders[_orderid].pay, orders[_orderid].init, orders[_orderid].payed);  
+  function queryOrder(uint _orderid) external view returns (address buyer, string memory product, uint price, uint pay, bool init, bool denied, bool payed){
+    return (orders[_orderid].buyer, orders[_orderid].product, (orders[_orderid].price + orders[_orderid].shipment.price), orders[_orderid].pay, orders[_orderid].init, orders[_orderid].denied, orders[_orderid].payed);  
   }
 }
