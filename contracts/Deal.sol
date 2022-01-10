@@ -33,7 +33,7 @@ contract Deal {
   event orderSent(address buyer, uint orderid, string product, uint price, uint pay, bool init, bool denied, bool payed);
   event orderApproved(address buyer, uint orderid);
   event orderDenied(address buyer, uint orderid);
-  event shipmentAdded(address buyer, uint orderid);
+  event shipmentAdded(uint orderid, address courier, address buyer, string product);
   event orderDelivered(address buyer, uint orderid);
   event orderPayed(address buyer, uint orderid, string product, uint price, uint pay, bool init, bool denied, bool payed);
 
@@ -82,7 +82,7 @@ contract Deal {
     orders[orderid].price = price;
     orders[orderid].shipment = Shipment(courier, shipment_price);
 
-    emit shipmentAdded(orders[orderid].buyer, orderid);
+    emit shipmentAdded(orderid, orders[orderid].shipment.courier, orders[orderid].buyer, orders[orderid].product);
   }
 
   function delivered(uint orderid) external payable {
