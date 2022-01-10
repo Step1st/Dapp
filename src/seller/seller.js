@@ -44,11 +44,10 @@ const netId = await web3.eth.net.getId();
 const deployedNetwork = DealJson.networks[netId];
 const accounts = await web3.eth.getAccounts();
 const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address, {from: accounts[0]});
-let selectedOrder = {
-  orderid: undefined,
-  product: undefined,
-  buyer: undefined,
-};
+let orders = new Array()
+
+loadOrders();
+
 
 
 var orderSentEmiter = Deal.events.orderSent( (error, event) => {
@@ -56,25 +55,25 @@ var orderSentEmiter = Deal.events.orderSent( (error, event) => {
     $(`<div class="tr ${event.returnValues.orderid}"> <span class="td orderid">${event.returnValues.orderid}</span> <span class="td product">${event.returnValues.product}</span> <span class="td buyer">${event.returnValues.buyer}</span> <span class="td button"><button class="btn approve-button">Approve</button> <button class="btn deny-button">Deny</button></span> </div>`));
     $('.approve-button').unbind('click').click(approve);
     $('.deny-button').unbind('click').click(deny);
-    // $('.tr').click(select);
-    localStorage.setItem(`order${event.returnValues.orderid}`, $(`.tr.${event.returnValues.orderid}`)[0].outerHTML)
+    orders.push($(`.tr.${event.returnValues.orderid}`)[0].outerHTML)
+    localStorage.setItem(`orders`, JSON.stringify(orders))
 });
 
 var orderApprovedEmiter = Deal.events.orderApproved( (error, event) => {
   $(`.${event.returnValues.orderid} > .button > .approve-button`).prop('disabled', true)
   $(`.${event.returnValues.orderid} > .button > .btn`).remove()
   $(`.${event.returnValues.orderid} > .button`).append($('<p class="approved">Approved &#10004;<p>'))
-  localStorage.setItem(`order${event.returnValues.orderid}`, $(`.tr.${event.returnValues.orderid}`)[0].outerHTML)
+  orders[event.returnValues.orderid-1] = $(`.tr.${event.returnValues.orderid}`)[0].outerHTML;
+  localStorage.setItem(`orders`, JSON.stringify(orders))
 })
 
 var orderDeniedEmiter = Deal.events.orderDenied( (error, event) => {
   $(`.${event.returnValues.orderid} > .button > .approve-button`).prop('disabled', true)
   $(`.${event.returnValues.orderid} > .button > .btn`).remove()
   $(`.${event.returnValues.orderid} > .button`).append($('<p class="denied">Denied &#x2718;<p>'))
-  localStorage.setItem(`order${event.returnValues.orderid}`, $(`.tr.${event.returnValues.orderid}`)[0].outerHTML)
+  orders[event.returnValues.orderid-1] = $(`.tr.${event.returnValues.orderid}`)[0].outerHTML;
+  localStorage.setItem(`orders`, JSON.stringify(orders))
 })
-
-loadOrders();
 
 $('.shipment-button').click(() => {
   let shipment = {
@@ -87,28 +86,22 @@ $('.shipment-button').click(() => {
 }) 
 
 function loadOrders(){
-  for (let index = localStorage.length -1; index >= 0; index--) {
-    $('#table').append(localStorage.getItem(localStorage.key(index)));
+  orders = JSON.parse(localStorage.getItem(localStorage.key('orders')));
+  if (orders == null) {
+    orders = new Array()
+    return
+  }
+  for (let index = 0; index < orders.length; index++) {
+    $('#table').append($(orders[index]));
   }
   $('.approve-button').click(approve);
   $('.deny-button').click(deny);
-  // $('.tr').click(select);
 }
-
-
-// function select(){
-//   $('.tr').removeClass('tr-selected')
-//   this.classList.add('tr-selected')
-//   selectedOrder.orderid = this.children[0].innerHTML
-//   selectedOrder.product = this.children[1].innerHTML
-//   selectedOrder.buyer = this.children[2].innerHTML
-// }
-
 
 function approve(event) {
   Deal.methods.initOrder(event.currentTarget.parentElement.parentElement.children[0].innerHTML).send();
-  console.log("call")
 }
+
 function deny(event) {
   Deal.methods.denyOrder(event.currentTarget.parentElement.parentElement.children[0].innerHTML).send();
 }
