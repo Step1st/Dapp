@@ -66,19 +66,29 @@ var orderSentEmiter = Deal.events.orderSent( (error, event) => {
 });
 
 var orderApprovedEmiter = Deal.events.orderApproved( (error, event) => {
+  if (hashtxset.has(event.transactionHash)) {
+    return
+  }
   $(`.${event.returnValues.orderid} > .button > .approve-button`).prop('disabled', true)
   $(`.${event.returnValues.orderid} > .button > .btn`).remove()
   $(`.${event.returnValues.orderid} > .button`).append($('<p class="approved">Approved &#10004;<p>'))
   orders[event.returnValues.orderid-1] = $(`.tr.${event.returnValues.orderid}`)[0].outerHTML;
   localStorage.setItem(`orders`, JSON.stringify(orders))
+  let txhash = event.transactionHash
+  hashtxset.add(txhash)
 })
 
 var orderDeniedEmiter = Deal.events.orderDenied( (error, event) => {
+  if (hashtxset.has(event.transactionHash)) {
+    return
+  }
   $(`.${event.returnValues.orderid} > .button > .approve-button`).prop('disabled', true)
   $(`.${event.returnValues.orderid} > .button > .btn`).remove()
   $(`.${event.returnValues.orderid} > .button`).append($('<p class="denied">Denied &#x2718;<p>'))
   orders[event.returnValues.orderid-1] = $(`.tr.${event.returnValues.orderid}`)[0].outerHTML;
   localStorage.setItem(`orders`, JSON.stringify(orders))
+  let txhash = event.transactionHash
+  hashtxset.add(txhash)
 })
 
 $('.shipment-button').click(() => {

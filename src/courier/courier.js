@@ -65,11 +65,16 @@ async function fetchDeal() {
   });
   
   var orderDeliveredEmiter = Deal.events.orderDelivered( (error, event) => {
+    if (hashtxset.has(event.transactionHash)) {
+      return
+    }
     $(`.${event.returnValues.orderid} > .button > .approve-button`).prop('disabled', true)
     $(`.${event.returnValues.orderid} > .button > .btn`).remove()
     $(`.${event.returnValues.orderid} > .button`).append($('<p class="approved">Delivered &#10004;<p>'))
     shipments[event.returnValues.orderid-1] = $(`.tr.${event.returnValues.orderid}`)[0].outerHTML;
     localStorage.setItem(`shipments`, JSON.stringify(shipments))
+    let txhash = event.transactionHash
+    hashtxset.add(txhash)
   })
   
   
