@@ -45,18 +45,24 @@ const deployedNetwork = DealJson.networks[netId];
 const accounts = await web3.eth.getAccounts();
 const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address, {from: accounts[0]});
 let orders = new Array()
+let hashtxset = new Set()
 
 loadOrders();
 
 
 
 var orderSentEmiter = Deal.events.orderSent( (error, event) => {
+  if (hashtxset.has(event.transactionHash)) {
+    return
+  }
   $('#table').append( 
     $(`<div class="tr ${event.returnValues.orderid}"> <span class="td orderid">${event.returnValues.orderid}</span> <span class="td product">${event.returnValues.product}</span> <span class="td buyer">${event.returnValues.buyer}</span> <span class="td button"><button class="btn approve-button">Approve</button> <button class="btn deny-button">Deny</button></span> </div>`));
     $('.approve-button').unbind('click').click(approve);
     $('.deny-button').unbind('click').click(deny);
     orders.push($(`.tr.${event.returnValues.orderid}`)[0].outerHTML)
     localStorage.setItem(`orders`, JSON.stringify(orders))
+    let txhash = event.transactionHash;
+    hashtxset.add(txhash)
 });
 
 var orderApprovedEmiter = Deal.events.orderApproved( (error, event) => {
@@ -86,7 +92,7 @@ $('.shipment-button').click(() => {
 }) 
 
 function loadOrders(){
-  orders = JSON.parse(localStorage.getItem(localStorage.key('orders')));
+  orders = JSON.parse(localStorage.getItem('orders'));
   if (orders == null) {
     orders = new Array()
     return

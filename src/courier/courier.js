@@ -44,40 +44,45 @@ async function fetchDeal() {
   const deployedNetwork = DealJson.networks[netId];
   const accounts = await web3.eth.getAccounts();
   const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address, {from: accounts[0]});
-  let orders = new Array()
+  let shipments = new Array()
+  let hashtxset = new Set()
   
   loadOrders();
   
   
   
-  var shipmentAddedEmiter = Deal.events.shipmentAdded( (error, event) => {
+  var shipmentAddedEmiter = Deal.events.shipmentAdded({filter: {courier: accounts[0]}, fromBlock:'latest'}, (error, event) => {
+    if (hashtxset.has(event.transactionHash)) {
+      return
+    }
     $('#table').append( 
       $(`<div class="tr ${event.returnValues.orderid}"> <span class="td orderid">${event.returnValues.orderid}</span> <span class="td product">${event.returnValues.product}</span> <span class="td buyer">${event.returnValues.buyer}</span> <span class="td button"> <button class="btn">Delivered</button> </div>`));
       $('.btn').unbind('click').click(delivered);
-      orders.push($(`.tr.${event.returnValues.orderid}`)[0].outerHTML)
-      localStorage.setItem(`shipments`, JSON.stringify(orders))
+      shipments.push($(`.tr.${event.returnValues.orderid}`)[0].outerHTML)
+      localStorage.setItem(`shipments`, JSON.stringify(shipments))
+      let txhash = event.transactionHash
+      hashtxset.add(txhash)
   });
   
   var orderDeliveredEmiter = Deal.events.orderDelivered( (error, event) => {
     $(`.${event.returnValues.orderid} > .button > .approve-button`).prop('disabled', true)
     $(`.${event.returnValues.orderid} > .button > .btn`).remove()
     $(`.${event.returnValues.orderid} > .button`).append($('<p class="approved">Delivered &#10004;<p>'))
-    orders[event.returnValues.orderid-1] = $(`.tr.${event.returnValues.orderid}`)[0].outerHTML;
-    localStorage.setItem(`shipments`, JSON.stringify(orders))
+    shipments[event.returnValues.orderid-1] = $(`.tr.${event.returnValues.orderid}`)[0].outerHTML;
+    localStorage.setItem(`shipments`, JSON.stringify(shipments))
   })
   
   
   function loadOrders(){
-    orders = JSON.parse(localStorage.getItem(localStorage.key('shipments')));
-    if (orders == null) {
-      orders = new Array()
+    shipments = JSON.parse(localStorage.getItem('shipments'));
+    if (shipments == null) {
+      shipments = new Array()
       return
     }
-    for (let index = 0; index < orders.length; index++) {
-      $('#table').append($(orders[index]));
+    for (let index = 0; index < shipments.length; index++) {
+      $('#table').append($(shipments[index]));
     }
-    $('.approve-button').click(approve);
-    $('.deny-button').click(deny);
+    $('.btn').click(delivered);
   }
   
   function delivered(event) {
