@@ -51,7 +51,7 @@ async function fetchDeal() {
   
   
   
-  var shipmentAddedEmiter = Deal.events.shipmentAdded({filter: {courier: accounts[0]}, fromBlock:'latest'}, (error, event) => {
+  var shipmentAddedEmiter = Deal.events.shipmentAdded({filter: {courier: accounts[0]}}, (error, event) => {
     if (hashtxset.has(event.transactionHash)) {
       return
     }

@@ -100,4 +100,9 @@ contract Deal {
   function queryOrder(uint _orderid) external view returns (address buyer, string memory product, uint price, uint pay, bool init, bool denied, bool payed){
     return (orders[_orderid].buyer, orders[_orderid].product, (orders[_orderid].price + orders[_orderid].shipment.price), orders[_orderid].pay, orders[_orderid].init, orders[_orderid].denied, orders[_orderid].payed);  
   }
+
+  function killContract() external payable{
+    require(msg.sender == owner);
+    selfdestruct(payable(owner));
+  }
 }
