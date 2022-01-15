@@ -44,6 +44,9 @@ const netId = await web3.eth.net.getId();
 const deployedNetwork = DealJson.networks[netId];
 const accounts = await web3.eth.getAccounts();
 const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address, {from: accounts[0]});
+web3.eth.transactionPollingTimeout = 31536000;
+// console.log(web3.eth.transactionPollingTimeout)
+console.log(web3)
 let orders = new Array()
 let hashtxset = new Set()
 
@@ -52,6 +55,10 @@ loadOrders();
 
 
 var orderSentEmiter = Deal.events.orderSent( (error, event) => {
+  if (error) {
+    console.log(error)
+    return
+  }
   if (hashtxset.has(event.transactionHash)) {
     return
   }
@@ -66,6 +73,10 @@ var orderSentEmiter = Deal.events.orderSent( (error, event) => {
 });
 
 var orderApprovedEmiter = Deal.events.orderApproved( (error, event) => {
+  if (error) {
+    console.log(error)
+    return
+  }
   if (hashtxset.has(event.transactionHash)) {
     return
   }
@@ -79,6 +90,10 @@ var orderApprovedEmiter = Deal.events.orderApproved( (error, event) => {
 })
 
 var orderDeniedEmiter = Deal.events.orderDenied( (error, event) => {
+  if (error) {
+    console.log(error)
+    return
+  }
   if (hashtxset.has(event.transactionHash)) {
     return
   }
@@ -115,10 +130,14 @@ function loadOrders(){
 }
 
 function approve(event) {
-  Deal.methods.initOrder(event.currentTarget.parentElement.parentElement.children[0].innerHTML).send();
+  let orderid = event.currentTarget.parentElement.parentElement.children[0].innerHTML
+  Deal.methods.initOrder(orderid).send();
+  $(`.${orderid} > .button > .approve-button`).prop('disabled', true)
 }
 
 function deny(event) {
-  Deal.methods.denyOrder(event.currentTarget.parentElement.parentElement.children[0].innerHTML).send();
+  let orderid = event.currentTarget.parentElement.parentElement.children[0].innerHTML
+  Deal.methods.denyOrder(orderid).send();
+  $(`.${orderid} > .button > .deny-button`).prop('disabled', true)
 }
   

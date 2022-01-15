@@ -44,6 +44,8 @@ async function fetchDeal() {
   const deployedNetwork = DealJson.networks[netId];
   const accounts = await web3.eth.getAccounts();
   const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address, {from: accounts[0]});
+web3.eth.transactionPollingTimeout = 31536000;
+// console.log(web3.eth.transactionPollingTimeout)
   let shipments = new Array()
   let hashtxset = new Set()
   
@@ -52,6 +54,10 @@ async function fetchDeal() {
   
   
   var shipmentAddedEmiter = Deal.events.shipmentAdded({filter: {courier: accounts[0]}}, (error, event) => {
+    if (error) {
+      console.log(error)
+      return
+    }
     if (hashtxset.has(event.transactionHash)) {
       return
     }
@@ -65,10 +71,14 @@ async function fetchDeal() {
   });
   
   var orderDeliveredEmiter = Deal.events.orderDelivered( (error, event) => {
+    if (error) {
+      console.log(error)
+      return
+    }
     if (hashtxset.has(event.transactionHash)) {
       return
     }
-    $(`.${event.returnValues.orderid} > .button > .approve-button`).prop('disabled', true)
+    $(`.${event.returnValues.orderid} > .button > .btn`).prop('disabled', true)
     $(`.${event.returnValues.orderid} > .button > .btn`).remove()
     $(`.${event.returnValues.orderid} > .button`).append($('<p class="approved">Delivered &#10004;<p>'))
     shipments[event.returnValues.orderid-1] = $(`.tr.${event.returnValues.orderid}`)[0].outerHTML;
@@ -91,5 +101,7 @@ async function fetchDeal() {
   }
   
   function delivered(event) {
+    let orderid = event.currentTarget.parentElement.parentElement.children[0].innerHTML
     Deal.methods.delivered(event.currentTarget.parentElement.parentElement.children[0].innerHTML).send();
+    $(`.${orderid} > .button > .btn`).prop('disabled', true)
   }

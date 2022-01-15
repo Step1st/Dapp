@@ -44,10 +44,16 @@ const netId = await web3.eth.net.getId();
 const deployedNetwork = DealJson.networks[netId];
 const accounts = await web3.eth.getAccounts();
 const Deal = new web3.eth.Contract(DealJson.abi, deployedNetwork.address, {from: accounts[0]});
+web3.eth.transactionPollingTimeout = 31536000;
+// console.log(web3.eth.transactionPollingTimeout)
 
 $('#accAdress').html(`${accounts[0]}`)
 
 var eventemitter = Deal.events.orderSent({filter: {buyer: accounts[0]}}, (error, event) => {
+  if (error) {
+    console.log(error)
+    return
+  }
   $('#orderid').html(event.returnValues.orderid);
   $('#product').html(event.returnValues.product);
   $('#price').html(web3.utils.fromWei(event.returnValues.price, 'ether') + 'Eth');
@@ -81,6 +87,10 @@ var eventemitter = Deal.events.orderSent({filter: {buyer: accounts[0]}}, (error,
 });
 
 var eventemitter2 = Deal.events.orderPayed({filter: {buyer: accounts[0]}}, (error, event) => {
+  if (error) {
+    console.log(error)
+    return
+  }
   $('#orderid').html(event.returnValues.orderid);
   $('#product').html(event.returnValues.product);
   $('#price').html(web3.utils.fromWei(event.returnValues.price, 'ether') + 'Eth');
